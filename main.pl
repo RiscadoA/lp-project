@@ -53,7 +53,8 @@ espacos_fila(H_V, Fila, Espacos) :-
 %-------------------------------------------------------------------------------
 espacos_puzzle(Puzzle, Espacos) :- 
     maplist(espacos_fila(h), Puzzle, X),
-    
-    maplist(espacos_fila(h), Puzzle, X),
-    append(X, Espacos).
+    mat_transposta(Puzzle, PuzzleTrans),
+    maplist(espacos_fila(h), PuzzleTrans, Y),
+    append([X, Y], Z),
+    append(Z, Espacos).
     
