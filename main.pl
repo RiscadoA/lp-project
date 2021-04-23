@@ -35,3 +35,25 @@ espaco_fila(Fila, espaco(Soma, Vars), H_V) :-
     ((H_V = h, last(Prefix, [_, Soma])) ; (H_V = v, last(Prefix, [Soma, _]))),
     nonvar(Soma),
     (([X|_] = Suffix, nonvar(X)) ; [] = Suffix). % Bloqueado a esquerda, ou fim
+
+%-------------------------------------------------------------------------------
+%                espacos_fila(H_V, Fila, Espacos)
+% espacos_fila(H_V, Fila, Espacos) significa que Espacos eh a lista de todos os
+% espacos de Fila, sendo que Fila eh uma linha ou coluna de um puzzle e H_V eh
+% um dos atomos h ou v, conforme se trate de uma fila horizontal ou vertical,
+% respetivamente.
+%-------------------------------------------------------------------------------
+espacos_fila(H_V, Fila, Espacos) :-
+    bagof(Esp, espaco_fila(Fila, Esp, H_V), Espacos) ; Espacos = [].
+
+%-------------------------------------------------------------------------------
+%                espacos_puzzle(Puzzle, Espacos)
+% espacos_puzzle(Puzzle, Espacos) significa que Espacos eh a lista de todos os
+% espacos de Puzzle, em que Puzzle eh um puzzle.
+%-------------------------------------------------------------------------------
+espacos_puzzle(Puzzle, Espacos) :- 
+    maplist(espacos_fila(h), Puzzle, X),
+    
+    maplist(espacos_fila(h), Puzzle, X),
+    append(X, Espacos).
+    
