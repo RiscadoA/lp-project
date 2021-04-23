@@ -19,3 +19,19 @@ permutacoes_soma(N, Els, Soma, Perms) :-
     combinacoes_soma(N, Els, Soma, Combs),
     findall(Perm, (member(Comb, Combs), permutation(Comb, Perm)), P),
     sort(P, Perms).
+
+
+%-------------------------------------------------------------------------------
+%                espaco_fila(Fila, Esp, H_V)
+% espaco_fila(Fila, Esp, H_V) significa que Esp e um espaco de Fila, sendo que
+% Fila eh uma linha ou coluna de um puzzle e H_V eh um dos atomos h ou v,
+% conforme se trate de uma fila horizontal ou vertical, respetivamente.
+%-------------------------------------------------------------------------------
+espaco_fila(Fila, espaco(Soma, Vars), H_V) :-
+    append([Prefix, Vars, Suffix], Fila),
+    Vars \= [],
+    maplist(var, Vars),
+    % Obter soma da fila
+    ((H_V = h, last(Prefix, [_, Soma])) ; (H_V = v, last(Prefix, [Soma, _]))),
+    nonvar(Soma),
+    (([X|_] = Suffix, nonvar(X)) ; [] = Suffix). % Bloqueado a esquerda, ou fim
