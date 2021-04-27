@@ -44,17 +44,33 @@ espaco_fila(Fila, espaco(Soma, Vars), H_V) :-
 % respetivamente.
 %-------------------------------------------------------------------------------
 espacos_fila(H_V, Fila, Espacos) :-
-    bagof(Esp, espaco_fila(Fila, Esp, H_V), Espacos) ; Espacos = [].
+    bagof(Esp, espaco_fila(Fila, Esp, H_V), X) -> Espacos = X ; Espacos = [].
 
 %-------------------------------------------------------------------------------
 %                espacos_puzzle(Puzzle, Espacos)
 % espacos_puzzle(Puzzle, Espacos) significa que Espacos eh a lista de todos os
 % espacos de Puzzle, em que Puzzle eh um puzzle.
 %-------------------------------------------------------------------------------
-espacos_puzzle(Puzzle, Espacos) :- 
+espacos_puzzle(Puzzle, Espacos) :-
     maplist(espacos_fila(h), Puzzle, X),
     mat_transposta(Puzzle, PuzzleTrans),
-    maplist(espacos_fila(h), PuzzleTrans, Y),
-    append([X, Y], Z),
-    append(Z, Espacos).
+    maplist(espacos_fila(v), PuzzleTrans, Y),
+    flatten([X, Y], Espacos).
     
+%-------------------------------------------------------------------------------
+%                espacos_com_posicoes_comuns(Espacos, Esp, Esps_com)
+% espacos_com_posicoes_comuns(Espacos, Esp, Esps_com) significa que Esps_com eh
+% a lista de espacos com variaveis em comum com Esp, exceptuando Esp. Os espacos
+% em Esps_com aparecem pela mesma ordem que aparecem em Espacos.
+%-------------------------------------------------------------------------------
+espacos_com_posicoes_comuns(Espacos, Esp, Esps_com) :-
+    espacos_com_posicoes_comuns(Espacos, Esp, Esps_com, []).
+espacos_com_posicoes_comuns([], _, Esps_com, Esps_com).
+espacos_com_posicoes_comuns([EspX|Espacos], EspY, Esps_com, Acc) :-
+    EspX \== EspY,
+    espaco(_,VarsX) = EspX,
+    espaco(_,VarsY) = EspY,
+    bagof(X, (member(X, VarsX), bagof(Y, (member(Y, VarsY), X == Y), _)), _) ->
+        append(Acc, [EspX], NewAcc),
+        espacos_com_posicoes_comuns(Espacos, EspY, Esps_com, NewAcc) ;
+        espacos_com_posicoes_comuns(Espacos, EspY, Esps_com, Acc).
