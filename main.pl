@@ -102,7 +102,7 @@ permutacao_possivel_espaco(PermX, EspX, Espacos, Perms_soma) :-
     member(PermX, Perms_soma_X),
     espaco(_, VarsX) = EspX,
 
-    forall(member(EspY, Esps_com), (
+    forall(member(EspY, Esps_com), (        
         member([EspY, Perms_soma_Y], Perms_soma),
         member(PermY, Perms_soma_Y),
         espaco(_, VarsY) = EspY,
@@ -113,3 +113,17 @@ permutacao_possivel_espaco(PermX, EspX, Espacos, Perms_soma) :-
         nth1(Xi, PermX, V),
         nth1(Yi, PermY, V)
     )).
+
+
+%-------------------------------------------------------------------------------
+%        permutacoes_possiveis_espaco(Espacos, Perms_soma, Esp, Perms_poss)
+% permutacoes_possiveis_espaco(Espacos, Perms_soma, Esp, Perms_poss) significa
+% que Perms_poss eh uma lista de 2 elementos em que o primeiro eh a lista de
+% variaveis de Esp e o segundo eh a lista ordenada de permutacoes possiveis para
+% o espaco Esp, em que Espacos e uma lista de espacos e Perms_soma eh uma lista
+% de listas tal como obtida pelo predicado permutacoes_soma_espacos/2
+%-------------------------------------------------------------------------------
+permutacoes_possiveis_espaco(Espacos, Perms_soma, Esp, Perms_poss) :-
+    findall(P, permutacao_possivel_espaco(P, Esp, Espacos, Perms_soma), Perms),
+    Esp = espaco(_, Vars),
+    Perms_poss = [Vars, Perms].
