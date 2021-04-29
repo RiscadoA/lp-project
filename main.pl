@@ -137,3 +137,13 @@ permutacoes_possiveis_espaco(Espacos, Perms_soma, Esp, Perms_poss) :-
 permutacoes_possiveis_espacos(Espacos, Perms_poss_esps) :-
     permutacoes_soma_espacos(Espacos, Perms_soma),
     maplist(permutacoes_possiveis_espaco(Espacos, Perms_soma), Espacos, Perms_poss_esps).
+
+%-------------------------------------------------------------------------------
+%        numeros_comuns(Lst_Perms, Numeros_comuns)
+% numeros_comuns(Lst_Perms, Numeros_comuns) significa que Numeros_comuns eh uma
+% lista de pares (pos, numero), significando que todas as listas de Lst_Perms
+% contem o numero numero na posicao pos, em que Lst_Perms eh uma lista de
+% permutacoes
+%-------------------------------------------------------------------------------
+numeros_comuns(Lst_Perms, Numeros_comuns) :-
+    findall((I,X), foreach(member(P, Lst_Perms), nth1(I, P, X)), Numeros_comuns).
