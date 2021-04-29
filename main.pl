@@ -20,7 +20,6 @@ permutacoes_soma(N, Els, Soma, Perms) :-
     findall(Perm, (member(Comb, Combs), permutation(Comb, Perm)), P),
     sort(P, Perms).
 
-
 %-------------------------------------------------------------------------------
 %                espaco_fila(Fila, Esp, H_V)
 % espaco_fila(Fila, Esp, H_V) significa que Esp e um espaco de Fila, sendo que
@@ -56,7 +55,7 @@ espacos_puzzle(Puzzle, Espacos) :-
     mat_transposta(Puzzle, PuzzleTrans),
     maplist(espacos_fila(v), PuzzleTrans, Y),
     flatten([X, Y], Espacos).
-    
+
 %-------------------------------------------------------------------------------
 %                espacos_com_posicoes_comuns(Espacos, Esp, Esps_com)
 % espacos_com_posicoes_comuns(Espacos, Esp, Esps_com) significa que Esps_com eh
@@ -70,7 +69,9 @@ espacos_com_posicoes_comuns([EspX|Espacos], EspY, Esps_com, Acc) :-
     EspX \== EspY,
     espaco(_,VarsX) = EspX,
     espaco(_,VarsY) = EspY,
-    bagof(X, (member(X, VarsX), bagof(Y, (member(Y, VarsY), X == Y), _)), _) ->
+    member(X, VarsX),
+    member(Y, VarsY),
+    (X == Y, var(X)) ->
         append(Acc, [EspX], NewAcc),
         espacos_com_posicoes_comuns(Espacos, EspY, Esps_com, NewAcc) ;
         espacos_com_posicoes_comuns(Espacos, EspY, Esps_com, Acc).
@@ -83,7 +84,32 @@ espacos_com_posicoes_comuns([EspX|Espacos], EspY, Esps_com, Acc) :-
 %-------------------------------------------------------------------------------
 permutacoes_soma_espacos([], []).
 permutacoes_soma_espacos([Esp|Espacos], [[Esp,Perm]|Perms_soma]) :-
-    Esp = espaco(Sum, Vars),
+    Esp = espaco(Soma, Vars),
     length(Vars, N),
-    permutacoes_soma(N, [1,2,3,4,5,6,7,8,9], Sum, Perm),
+    permutacoes_soma(N, [1,2,3,4,5,6,7,8,9], Soma, Perm),
     permutacoes_soma_espacos(Espacos, Perms_soma).
+
+%-------------------------------------------------------------------------------
+%                permutacao_possivel_espaco(Perm, Esp, Espacos, Perms_soma)
+% permutacao_possivel_espaco(Perm, Esp, Espacos, Perms_soma) significa que Perm
+% eh uma permutacao possivel para o espaco Esp, em que Espacos eh uma lista de
+% espacos e Perms_soma eh uma lista de listas tal como obtida pelo predicado
+% permutacoes_soma_espacos/2
+%-------------------------------------------------------------------------------
+permutacao_possivel_espaco(PermX, EspX, Espacos, Perms_soma) :-
+    espacos_com_posicoes_comuns(Espacos, EspX, Esps_com),
+    member([EspX, Perms_soma_X], Perms_soma),
+    member(PermX, Perms_soma_X),
+    espaco(_, VarsX) = EspX,
+
+    forall(member(EspY, Esps_com), (
+        member([EspY, Perms_soma_Y], Perms_soma),
+        member(PermY, Perms_soma_Y),
+        espaco(_, VarsY) = EspY,
+
+        nth1(Xi, VarsX, X),
+        nth1(Yi, VarsY, Y),
+        X == Y,
+        nth1(Xi, PermX, V),
+        nth1(Yi, PermY, V)
+    )).
