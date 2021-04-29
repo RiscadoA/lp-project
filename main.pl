@@ -127,3 +127,13 @@ permutacoes_possiveis_espaco(Espacos, Perms_soma, Esp, Perms_poss) :-
     findall(P, permutacao_possivel_espaco(P, Esp, Espacos, Perms_soma), Perms),
     Esp = espaco(_, Vars),
     Perms_poss = [Vars, Perms].
+
+%-------------------------------------------------------------------------------
+%        permutacoes_possiveis_espacos(Espacos, Perms_poss_esps)
+% permutacoes_possiveis_espacos(Espacos, Perms_poss_esps) significa que
+% Perms_poss_esps eh uma lista de permutacoes possiveis, em que Espacos eh uma
+% lista de espacos
+%-------------------------------------------------------------------------------
+permutacoes_possiveis_espacos(Espacos, Perms_poss_esps) :-
+    permutacoes_soma_espacos(Espacos, Perms_soma),
+    maplist(permutacoes_possiveis_espaco(Espacos, Perms_soma), Espacos, Perms_poss_esps).
