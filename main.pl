@@ -192,3 +192,13 @@ simplifica(Perms_Possiveis, Novas_Perms_Possiveis) :-
     X \== Perms_Possiveis ->
         simplifica(X, Novas_Perms_Possiveis) ;
         Novas_Perms_Possiveis = Perms_Possiveis.
+
+%-------------------------------------------------------------------------------
+%        inicializa(Puzzle, Perms_Possiveis)
+% inicializa(Puzzle, Perms_Possiveis) em que Puzzle eh um puzzle, significa que
+% Perms_Possiveis eh a lista de permutacoes possiveis simplificada para Puzzle
+%-------------------------------------------------------------------------------
+inicializa(Puzzle, Perms_Possiveis) :-
+    espacos_puzzle(Puzzle, Espacos),
+    permutacoes_possiveis_espacos(Espacos, Perms),
+    simplifica(Perms, Perms_Possiveis).
