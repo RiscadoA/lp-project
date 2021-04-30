@@ -218,3 +218,17 @@ escolhe_menos_alternativas(Perms_Possiveis, Escolha) :-
     length(P, L),
     min_list(Ls, L),
     !.
+
+%-------------------------------------------------------------------------------
+%        experimenta_perm(Escolha, Perms_Possiveis, Novas_Perms_Possiveis)
+% experimenta_perm(Escolha, Perms_Possiveis, Novas_Perms_Possiveis) em que
+% Perms_Possiveis eh a lista de permutacoes possiveis, e Escolha eh um dos seus
+% elementos, significa que Novas_Perms_Possiveis eh o resultado de substituir,
+% em Perms_Possiveis, o elemento Escolha pelo elemento [Esp, [Perm]] em que
+% Esp e Perm sao respetivamente o espaco e uma permutacao de Escolha
+%-------------------------------------------------------------------------------
+experimenta_perm([Esp, Lst_Perms], Perms_Possiveis, Novas_Perms_Possiveis) :-
+    append([Begin, [[Esp, Lst_Perms]], End], Perms_Possiveis),
+    member(Perm, Lst_Perms),
+    Esp = Perm,
+    append([Begin, [[Esp, [Perm]]], End], Novas_Perms_Possiveis).
