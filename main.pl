@@ -134,9 +134,9 @@ permutacoes_possiveis_espaco(Espacos, Perms_soma, Esp, Perms_poss) :-
 % Perms_poss_esps eh uma lista de permutacoes possiveis, em que Espacos eh uma
 % lista de espacos
 %-------------------------------------------------------------------------------
-permutacoes_possiveis_espacos(Espacos, Perms_poss_esps) :-
+permutacoes_possiveis_espacos(Espacos, Ppe) :-
     permutacoes_soma_espacos(Espacos, Perms_soma),
-    maplist(permutacoes_possiveis_espaco(Espacos, Perms_soma), Espacos, Perms_poss_esps).
+    maplist(permutacoes_possiveis_espaco(Espacos, Perms_soma), Espacos, Ppe).
 
 %-------------------------------------------------------------------------------
 %        numeros_comuns(Lst_Perms, Numeros_comuns)
@@ -146,4 +146,18 @@ permutacoes_possiveis_espacos(Espacos, Perms_poss_esps) :-
 % permutacoes
 %-------------------------------------------------------------------------------
 numeros_comuns(Lst_Perms, Numeros_comuns) :-
-    findall((I,X), foreach(member(P, Lst_Perms), nth1(I, P, X)), Numeros_comuns).
+    findall((I,X), foreach(member(P,Lst_Perms), nth1(I, P, X)), Numeros_comuns).
+
+%-------------------------------------------------------------------------------
+%        atribui_comuns(Perms_Possiveis)
+% atribui_comuns(Perms_Possiveis) em que Perms_Possiveis eh uma lista de
+% permutacoes possiveis, atualiza esta lista atribuindo a cada espaco numeros
+% comuns a todas as permutacoes possiveis para esse espaco
+%-------------------------------------------------------------------------------
+atribui_comuns(Perms_Possiveis) :-
+    findall([Vars,P], (
+        member([Vars,P], Perms_Possiveis),
+        numeros_comuns(P, NC),
+        foreach(member((I,X), NC), nth1(I, Vars, X))
+    ), Perms_Possiveis).
+    
