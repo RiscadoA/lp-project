@@ -232,3 +232,17 @@ experimenta_perm([Esp, Lst_Perms], Perms_Possiveis, Novas_Perms_Possiveis) :-
     member(Perm, Lst_Perms),
     Esp = Perm,
     append([Begin, [[Esp, [Perm]]], End], Novas_Perms_Possiveis).
+
+%-------------------------------------------------------------------------------
+%        resolve_aux(Perms_Possiveis, Novas_Perms_Possiveis)
+% resolve_aux(Perms_Possiveis, Novas_Perms_Possiveis) em que Perms_Possiveis eh
+% uma lista de permutacoes possiveis, significa que Novas_Perms_Possiveis eh o
+% resultado de aplicar o algoritmo descrito na seccao 2.2 a Perm_Possiveis
+%-------------------------------------------------------------------------------
+resolve_aux(Perm_Possiveis, Novas_Perms_Possiveis) :-
+    escolhe_menos_alternativas(Perm_Possiveis, Escolha) ->
+        experimenta_perm(Escolha, Perm_Possiveis, X),
+        simplifica(X, Y),
+        resolve_aux(Y, Novas_Perms_Possiveis) ;
+        Perm_Possiveis = Novas_Perms_Possiveis,
+        forall(member([_,Lst], Novas_Perms_Possiveis), (length(Lst, L), L > 0)).
