@@ -202,3 +202,19 @@ inicializa(Puzzle, Perms_Possiveis) :-
     espacos_puzzle(Puzzle, Espacos),
     permutacoes_possiveis_espacos(Espacos, Perms),
     simplifica(Perms, Perms_Possiveis).
+
+%-------------------------------------------------------------------------------
+%        escolhe_menos_alternativas(Perms_Possiveis, Escolha)
+% escolhe_menos_alternativas(Perms_Possiveis, Escolha) em que Perms_Possiveis eh
+% a lista de permutacoes possiveis, significa que Escolha eh o elemento de
+% Perms_Possiveis escolhido segundo o criterio de menor numero de permutacoes.
+% Se todos os espacos em Perms_Possiveis tiverem associadas listas de
+% permutacoes unitarias, o predicado devolve "falso"
+%-------------------------------------------------------------------------------
+escolhe_menos_alternativas(Perms_Possiveis, Escolha) :-
+    findall(L, (member([_,P], Perms_Possiveis), length(P, L), L > 1), Ls),
+    member(Escolha, Perms_Possiveis),
+    Escolha = [_,P],
+    length(P, L),
+    min_list(Ls, L),
+    !.
