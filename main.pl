@@ -155,9 +155,25 @@ numeros_comuns(Lst_Perms, Numeros_comuns) :-
 % comuns a todas as permutacoes possiveis para esse espaco
 %-------------------------------------------------------------------------------
 atribui_comuns(Perms_Possiveis) :-
-    findall([Vars,P], (
-        member([Vars,P], Perms_Possiveis),
-        numeros_comuns(P, NC),
+    findall([Vars,Ps], (
+        member([Vars,Ps], Perms_Possiveis),
+        numeros_comuns(Ps, NC),
         foreach(member((I,X), NC), nth1(I, Vars, X))
     ), Perms_Possiveis).
     
+%-------------------------------------------------------------------------------
+%        retira_impossiveis(Perms_Possiveis, Novas_Perms_Possiveis)
+% retira_impossiveis(Perms_Possiveis, Novas_Perms_Possiveis) em que
+% Perms_Possiveis eh uma lista de permutacoes possiveis, significa que
+% Novas_Perms_Possiveis eh o resultado de tirar permutacoes impossiveis de
+% Perms_Possiveis
+%-------------------------------------------------------------------------------
+retira_impossiveis(Perms_Possiveis, Novas_Perms_Possiveis) :-
+    maplist(retira_impossiveis_aux, Perms_Possiveis, Novas_Perms_Possiveis).
+retira_impossiveis_aux([Vars, Perms1], [Vars, Perms2]) :-
+    findall(P, (
+        member(P, Perms1),
+        forall(nth1(I, Vars, V), (
+            nonvar(V) -> nth1(I, P, V) ; true
+        ))
+    ), Perms2).    
