@@ -1,4 +1,4 @@
-:- [codigo_comum, puzzles_publicos].
+:- [codigo_comum].
 
 %-------------------------------------------------------------------------------
 %                combinacoes_soma(N, Els, Soma, Combs)
@@ -30,10 +30,9 @@ espaco_fila(Fila, espaco(Soma, Vars), H_V) :-
     append([Prefix, Vars, Suffix], Fila),
     Vars \= [],
     maplist(var, Vars),
-    % Obter soma da fila
-    ((H_V = h, last(Prefix, [_, Soma])) ; (H_V = v, last(Prefix, [Soma, _]))),
-    nonvar(Soma),
-    (([X|_] = Suffix, nonvar(X)) ; [] = Suffix). % Bloqueado a esquerda, ou fim
+    last(Prefix, [A,B]), nonvar(A), nonvar(B),
+    ((H_V = h, B = Soma) ; (H_V = v, A = Soma)),
+    (([X|_] = Suffix, nonvar(X), X = [C,D], nonvar(C), nonvar(D)) ; [] = Suffix). % Bloqueado a esquerda, ou fim
 
 %-------------------------------------------------------------------------------
 %                espacos_fila(H_V, Fila, Espacos)
@@ -114,7 +113,6 @@ permutacao_possivel_espaco(PermX, EspX, Espacos, Perms_soma) :-
         nth1(Yi, PermY, V)
     )).
 
-
 %-------------------------------------------------------------------------------
 %        permutacoes_possiveis_espaco(Espacos, Perms_soma, Esp, Perms_poss)
 % permutacoes_possiveis_espaco(Espacos, Perms_soma, Esp, Perms_poss) significa
@@ -124,7 +122,7 @@ permutacao_possivel_espaco(PermX, EspX, Espacos, Perms_soma) :-
 % de listas tal como obtida pelo predicado permutacoes_soma_espacos/2
 %-------------------------------------------------------------------------------
 permutacoes_possiveis_espaco(Espacos, Perms_soma, Esp, Perms_poss) :-
-    findall(P, permutacao_possivel_espaco(P, Esp, Espacos, Perms_soma), Perms),
+    bagof(P, permutacao_possivel_espaco(P, Esp, Espacos, Perms_soma), Perms),
     Esp = espaco(_, Vars),
     Perms_poss = [Vars, Perms].
 
