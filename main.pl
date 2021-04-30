@@ -176,4 +176,19 @@ retira_impossiveis_aux([Vars, Perms1], [Vars, Perms2]) :-
         forall(nth1(I, Vars, V), (
             nonvar(V) -> nth1(I, P, V) ; true
         ))
-    ), Perms2).    
+    ), Perms2).
+
+%-------------------------------------------------------------------------------
+%        simplifica(Perms_Possiveis, Novas_Perms_Possiveis)
+% simplifica(Perms_Possiveis, Novas_Perms_Possiveis) em que Perms_Possiveis
+% eh uma lista de permutacoes possiveis, significa que Novas_Perms_Possiveis
+% eh o resultado de simplificar Perms_Possiveis, isto eh, aplicar-lhe os
+% predicados atribui_comuns e retira_impossiveis, por esta ordem, ate nao haver
+% mais alteracoes
+%-------------------------------------------------------------------------------
+simplifica(Perms_Possiveis, Novas_Perms_Possiveis) :-
+    atribui_comuns(Perms_Possiveis),
+    retira_impossiveis(Perms_Possiveis, X),
+    X \== Perms_Possiveis ->
+        simplifica(X, Novas_Perms_Possiveis) ;
+        Novas_Perms_Possiveis = Perms_Possiveis.
