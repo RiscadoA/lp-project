@@ -246,3 +246,13 @@ resolve_aux(Perm_Possiveis, Novas_Perms_Possiveis) :-
         resolve_aux(Y, Novas_Perms_Possiveis) ;
         Perm_Possiveis = Novas_Perms_Possiveis,
         forall(member([_,Lst], Novas_Perms_Possiveis), (length(Lst, L), L > 0)).
+
+%-------------------------------------------------------------------------------
+%       resolve(Puz)
+% resolve(Puz) em que Puz eh um puzzle, resolve esse puzzle, isto eh, apos a
+% invocacao deste predicado a grelha de Puz tem todas as variaveis substituidas
+% por numeros que respeitam as restricoes Puz
+%-------------------------------------------------------------------------------
+resolve(Puz) :-
+    inicializa(Puz, Perm_Possiveis),
+    resolve_aux(Perm_Possiveis, _).
